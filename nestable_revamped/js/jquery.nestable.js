@@ -57,17 +57,18 @@
             collapsedClass  : 'dd-collapsed',
             placeClass      : 'dd-placeholder',
             noDragClass     : 'dd-nodrag',
-
-            //additions
-            //duplicates original dragged item
-            dispenseClass   : 'dd-dispense',
-            duplicateClass  : 'dd-duplicate',//non deletion case.
-            //alert before change
-            alertFirst      : 'dd-alert',
-
             emptyClass      : 'dd-empty',
             expandBtnHTML   : '<button data-action="expand" type="button">Expand</button>',
             collapseBtnHTML : '<button data-action="collapse" type="button">Collapse</button>',
+            //additions
+            //duplicates original dragged item
+            dispenseClass   : 'dd-dispense',
+            //non deletion case item.
+            duplicateClass  : 'dd-duplicate',
+            //alert before change
+            alertFirst      : 'dd-alert',
+            //populate li json
+            jsonArray       : [{test:"blah"},{test2:"blah2"}],
             group           : 0,
             maxDepth        : 5,
             threshold       : 20
@@ -294,7 +295,7 @@
             //element used to change instanceRoot
             this.instanceRoot = this.el;
             //remember the very first list you started from
-            this.initialRoot= this.el;
+            this.initialRoot  = this.el;
 
             this.dragEl = $(document.createElement(this.options.listNodeName)).addClass(this.options.listClass + ' ' + this.options.dragClass);
             this.dragEl.css('width', dragItem.width());
@@ -326,20 +327,21 @@
         dragStop: function(e)
         {
 
-          var pointElRoot = this.pointEl.closest('.' + this.options.rootClass),
-          isDiffFromOrig   = this.initialRoot.data('nestable-id') !== pointElRoot.data('nestable-id')
+            //check to see if the hovered list is the same as the starting list.
+            var pointElRoot = this.pointEl.closest('.' + this.options.rootClass),
+            isDiffFromOrig   = this.initialRoot.data('nestable-id') !== pointElRoot.data('nestable-id')
 
             var el = this.dragEl.children(this.options.itemNodeName).first();
             el[0].parentNode.removeChild(el[0]);
             this.placeEl.replaceWith(el);
 
-
-
+            //  if "dispense"
             if(el.hasClass(this.options.dispenseClass) && isDiffFromOrig){
               let duplicate = el.clone()
+              el.removeClass(this.options.dispenseClass)
               this.dupEl.replaceWith(duplicate);
             }
-            else {
+            else if (el.hasClass(this.options.dispenseClass)) {
               this.dupEl.replaceWith(el);
             }
 
@@ -467,7 +469,6 @@
             // find parent list of item under cursor
             var pointElRoot = this.pointEl.closest('.' + opt.rootClass),
                 isNewRoot   = this.instanceRoot.data('nestable-id') !== pointElRoot.data('nestable-id');
-
             /**
              * move vertical
              */

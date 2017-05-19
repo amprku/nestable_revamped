@@ -1,10 +1,9 @@
 # nestable_revamped
 making the a, forgotten, 'nestable' jQuery tool by  do what I want it to. 
-
 To be specific, this one:
-'''
+```
 Nestable jQuery Plugin - Copyright (c) 2012 David Bushell - http://dbushell.com/
-'''
+```
 ## Inital Goals -- May 2017
      * 'datum()' return fxn: modeled after d3.js's datum, I wanted to make it so I could associate a json
         element with a list item. by calling this function, you are returned the json relevant to the node.

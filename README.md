@@ -1,5 +1,5 @@
 # nestable_revamped
-making the a, forgotten, 'nestable' jQuery tool by  do what I want it to. 
+making the a forgotten 'nestable' jQuery tool by  do what I want it to. 
 To be specific, this one:
 ```
 https://github.com/dbushell/Nestable

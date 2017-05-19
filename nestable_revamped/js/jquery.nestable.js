@@ -217,13 +217,14 @@
                 distAxX   : 0,
                 distAxY   : 0
             };
-            this.isTouch    = false;
-            this.moving     = false;
-            this.dragEl     = null;
-            this.dragRootEl = null;
-            this.dragDepth  = 0;
-            this.hasNewRoot = false;
-            this.pointEl    = null;
+            this.isTouch      = false;
+            this.moving       = false;
+            this.dragEl       = null;
+            this.instanceRoot = null;
+            this.initialRoot  = null;
+            this.dragDepth    = 0;
+            this.hasNewRoot   = false;
+            this.pointEl      = null;
         },
 
         expandItem: function(li)
@@ -290,7 +291,10 @@
             mouse.startX = mouse.lastX = e.pageX;
             mouse.startY = mouse.lastY = e.pageY;
 
-            this.dragRootEl = this.el;
+            //element used to change instanceRoot
+            this.instanceRoot = this.el;
+            //remember the very first list you started from
+            this.initialRoot= this.el;
 
             this.dragEl = $(document.createElement(this.options.listNodeName)).addClass(this.options.listClass + ' ' + this.options.dragClass);
             this.dragEl.css('width', dragItem.width());
@@ -321,18 +325,28 @@
 
         dragStop: function(e)
         {
+
+          var pointElRoot = this.pointEl.closest('.' + this.options.rootClass),
+          isDiffFromOrig   = this.initialRoot.data('nestable-id') !== pointElRoot.data('nestable-id')
+
             var el = this.dragEl.children(this.options.itemNodeName).first();
             el[0].parentNode.removeChild(el[0]);
             this.placeEl.replaceWith(el);
 
-            if(el.hasClass(this.options.dispenseClass)){
+
+
+            if(el.hasClass(this.options.dispenseClass) && isDiffFromOrig){
               let duplicate = el.clone()
               this.dupEl.replaceWith(duplicate);
             }
+            else {
+              this.dupEl.replaceWith(el);
+            }
+
             this.dragEl.remove();
             this.el.trigger('change');
             if (this.hasNewRoot) {
-                this.dragRootEl.trigger('change');
+                this.instanceRoot.trigger('change');
             }
             this.reset();
         },
@@ -393,7 +407,6 @@
              * move horizontal
              */
             if (mouse.dirAx && mouse.distAxX >= opt.threshold) {
-                console.log("1")
                 // reset move distance on x-axis for new phase
                 mouse.distAxX = 0;
                 prev = this.placeEl.prev(opt.itemNodeName);
@@ -419,7 +432,6 @@
                 }
                 // decrease horizontal level
                 if (mouse.distX < 0) {
-                                  console.log("2")
                     // we can't decrease a level if an item preceeds the current one
                     next = this.placeEl.next(opt.itemNodeName);
                     if (!next.length) {
@@ -454,13 +466,12 @@
 
             // find parent list of item under cursor
             var pointElRoot = this.pointEl.closest('.' + opt.rootClass),
-                isNewRoot   = this.dragRootEl.data('nestable-id') !== pointElRoot.data('nestable-id');
-            console.log(isNewRoot)
+                isNewRoot   = this.instanceRoot.data('nestable-id') !== pointElRoot.data('nestable-id');
+
             /**
              * move vertical
              */
             if (!mouse.dirAx || isNewRoot || isEmpty) {
-
                 // check if groups match if dragging over new root
                 if (isNewRoot && opt.group !== pointElRoot.data('nestable-group')) {
                     return;
@@ -487,13 +498,13 @@
                 if (!parent.children().length) {
                     this.unsetParent(parent.parent());
                 }
-                if (!this.dragRootEl.find(opt.itemNodeName).length) {
-                    this.dragRootEl.append('<div class="' + opt.emptyClass + '"/>');
+                if (!this.instanceRoot.find(opt.itemNodeName).length) {
+                    this.instanceRoot.append('<div class="' + opt.emptyClass + '"/>');
                 }
                 // parent root list has changed
-                if (isNewRoot) {
-                    this.dragRootEl = pointElRoot;
-                    this.hasNewRoot = this.el[0] !== this.dragRootEl[0];
+                if (isNewRoot){// && $(this).hasClass(this.options.dispenseClass)) {
+                    this.instanceRoot = pointElRoot;
+                    this.hasNewRoot = this.el[0] !== this.instanceRoot[0];
                 }
             }
         }

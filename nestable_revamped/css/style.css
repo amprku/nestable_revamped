@@ -58,7 +58,7 @@ p { line-height: 1.5em; }
 }
 
 .dd-duplicate,
-.dd-empty { margin: 5px 0; padding: 0; min-height: 30px; background: #959E8B; border: 2px dashed #6F6F6F; box-sizing: border-box; -moz-box-sizing: border-box; }
+.dd-empty { margin: 5px 0; padding: 0; min-height: 30px; background: #DADADA; border: 2px dashed #6F6F6F; box-sizing: border-box; -moz-box-sizing: border-box; }
 .dd-empty { border: 2px dashed #000000; min-height: 100px; background-color: #000000;
     background-image: -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff),
                       -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
